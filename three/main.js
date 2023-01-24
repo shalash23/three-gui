@@ -38,9 +38,7 @@ const font = fontLoader.load(
       bevelOffset: 0,
       bevelSegments: 5,
     });
-    const textMaterial = new THREE.MeshMatcapMaterial({
-      matcap: matcapTexture2,
-    });
+    const textMaterial = new THREE.MeshToonMaterial({});
     const text = new THREE.Mesh(textGeometry, textMaterial);
     // textGeometry.computeBoundingBox();
 
@@ -139,6 +137,8 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 const pointLight = new THREE.PointLight(0xffffff, 0.5);
 pointLight.position.set(2, 3, 4);
 
+console.log(ambientLight, pointLight);
+
 scene.add(ambientLight, pointLight);
 
 /**
@@ -158,6 +158,17 @@ gui.addColor(parameters, "color").onChange(() => {
   material.color.set(parameters.color);
 });
 
+gui
+  .add(ambientLight, "intensity")
+  .min(0)
+  .max(1)
+  .step(0.1)
+  .name("Ambient Light");
+
+gui.add(pointLight, "intensity", 0, 1, 0.1).name("Point Light");
+gui.add(pointLight.position, "x", 0, 5, 0.2).name("PointLight X");
+gui.add(pointLight.position, "y", 0, 5, 0.2).name("PointLight Y");
+gui.add(pointLight.position, "z", 0, 5, 0.2).name("PointLight Z");
 /**
  * Renderer
  */
