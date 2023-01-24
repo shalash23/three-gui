@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import * as gsap from "gsap";
+import gsap from "gsap";
 import * as dat from "dat.gui";
 import "./style.css";
 
 import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls";
-import { PlaneGeometry } from "three";
 
 /**
  * Canvas & Scene
@@ -12,6 +11,12 @@ import { PlaneGeometry } from "three";
 
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
+
+/**
+ * GUI
+ */
+
+const gui = new dat.GUI();
 
 /**
  * Parameters
@@ -23,7 +28,12 @@ const sizes = {
 };
 
 const parameters = {
-  color: new THREE.Color(0xf3f3f3),
+  color: 0xf3f3f3,
+  rotatePlaneX: () => {
+    gsap.to(plane.rotation, {
+      x: plane.rotation.x + Math.PI * 2,
+    });
+  },
 };
 
 let aspectRatio = sizes.width / sizes.height;
@@ -33,15 +43,15 @@ let aspectRatio = sizes.width / sizes.height;
 
 const material = new THREE.MeshToonMaterial({ color: parameters.color });
 material.side = THREE.DoubleSide;
-const geometry = new THREE.SphereBufferGeometry(0.5);
+const geometry = new THREE.SphereGeometry(1.5);
 const sphere = new THREE.Mesh(geometry, material);
 const torus = new THREE.Mesh(
-  new THREE.TorusBufferGeometry(0.5, 0.2, 16, 32),
+  new THREE.TorusGeometry(2.5, 0.2, 16, 32),
   material
 );
 
 const plane = new THREE.Mesh(
-  new THREE.PlaneBufferGeometry(0.2, 0.5, 16, 5),
+  new THREE.PlaneGeometry(0.2, 0.5, 16, 5),
   material
 );
 torus.position.set(3, 0, 0);
@@ -73,6 +83,16 @@ scene.add(ambientLight, pointLight);
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
+
+/**
+ * Debugger
+ */
+
+gui.add(parameters, "rotatePlaneX").name("Rotate Plane X");
+
+gui.addColor(parameters, "color").onChange(() => {
+  material.color.set(parameters.color);
+});
 
 /**
  * Renderer
@@ -120,8 +140,12 @@ function tick() {
   /**
    * Animate torus
    */
-  torus.rotation.x = 0.3 * elapsedTime;
   torus.position.x = Math.sin(elapsedTime);
+
+  /**
+   * Animate Plane
+   */
+  plane.position.x = Math.cos(elapsedTime);
 
   controls.update();
   renderer.render(scene, camera);
