@@ -158,17 +158,18 @@ gui.addColor(parameters, "color").onChange(() => {
   material.color.set(parameters.color);
 });
 
-gui
+const lightFolder = gui.addFolder("Light");
+lightFolder
   .add(ambientLight, "intensity")
   .min(0)
   .max(1)
   .step(0.1)
   .name("Ambient Light");
 
-gui.add(pointLight, "intensity", 0, 1, 0.1).name("Point Light");
-gui.add(pointLight.position, "x", 0, 5, 0.2).name("PointLight X");
-gui.add(pointLight.position, "y", 0, 5, 0.2).name("PointLight Y");
-gui.add(pointLight.position, "z", 0, 5, 0.2).name("PointLight Z");
+lightFolder.add(pointLight, "intensity", 0, 1, 0.1).name("Point Light");
+lightFolder.add(pointLight.position, "x", -5, 5, 0.2).name("PointLight X");
+lightFolder.add(pointLight.position, "y", -5, 5, 0.2).name("PointLight Y");
+lightFolder.add(pointLight.position, "z", -5, 5, 0.2).name("PointLight Z");
 /**
  * Renderer
  */
